@@ -1,8 +1,10 @@
 ---
 title: "class activity 3"
-author: "Charles Lang"
-date: "10/2/2018"
-output: html_document
+author: "Xiaowen Chen"
+date: "10/01/2019"
+output:
+  word_document: default
+  html_document: default
 ---
 
 #Mapping aesthetic to data to = layer
@@ -43,6 +45,32 @@ ggplot(mpg, aes(displ, hwy, color = class)) +
 Can you create a line graph using the "economics_long" data set that shows change over time in "value01" for different categories of "variable"?
 
 ```{r}
+library(ggplot2)
+library(lubridate)
+theme_set(theme_bw())
+economics_long
+economics
+head(economics_long)
+df <- economics_long[economics_long$variable %in% c("pop","pce","psavert", "uempmed","unemploy"),]
+df <- df[lubridate::year(df$date) %in% c(1967:2010), ]
+
+# labels and breaks for X axis text
+brks <- df$date[seq(1, length(df$date), 12)]
+lbls <- lubridate::year(brks)
+
+# plot
+ggplot(df, aes(x=date)) + 
+  geom_line(aes(y=value01, col=variable)) + 
+  labs(title="Time Series of Returns Percentage", 
+       subtitle="Year from 1967 to 2010", 
+       caption="Source: Economics", 
+       y="Returns %", 
+       color=NULL) +  # title and caption
+  scale_x_date(labels = lbls, breaks = brks) +  # change to monthly ticks and labels
+  scale_color_manual(labels = c("pce","pop","psavert", "uempmed","unemploy"), 
+                     values = c("pce"=	"#0000FF","pop"=	"#ff6347","psavert"="#00008B", "uempmed"="#6b8e23","unemploy"="#FF1493")) +  # line color
+  theme(axis.text.x = element_text(angle = 90, vjust=0.3, size = 6),  # rotate x axis text
+        panel.grid.minor = element_blank())  # turn off minor grid
 
 ```
 
@@ -61,7 +89,7 @@ size = 4)
 last_plot() +
   scale_x_continuous("", limits = c(24, 39)) +
   scale_y_continuous("") +
-  scale_colour_manual(values = c("grey50","red")) +
-  scale_size(to = c(1, 10))
+  scale_colour_manual(values = c("blue","red")) +
+  scale_size(c(1, 10))
 ```
 
